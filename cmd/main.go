@@ -12,7 +12,7 @@ func main() {
 	term.initTerminal()
 	for {
 		dir := strings.TrimLeft(term.CurrDir, term.HomeDir)
-		fmt.Printf("%v%v%v> ", term.CurrentColor, dir, colors["Reset"])
+		fmt.Printf("%v~%v%v> ", term.CurrentColor, dir, colors["Reset"])
 		if !term.InputScanner.Scan() {
 			break
 		}
