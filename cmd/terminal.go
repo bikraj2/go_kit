@@ -9,15 +9,15 @@ type Info struct {
 	CurrDir string
 	HomeDir string
 }
-type Commands struct {
+type Args struct {
 	Cmds []string
 }
 
 type Terminal struct {
-	Color
 	Info
-	Commands
+	Args
 	InputScanner *bufio.Scanner
+	Commands
 }
 
 func (info *Info) initInfo() {
@@ -46,5 +46,5 @@ func (term *Terminal) initTerminal() {
 
 	// Initaliing Dependent Struct
 	term.initInfo()
-	term.initColor()
+	term.Commands.Color.InitColor()
 }
