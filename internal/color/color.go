@@ -10,7 +10,6 @@ import (
 type Color struct {
 	CurrentColor string
 	ResetColor   string
-	ColorOptions
 }
 type ColorOptions struct {
 	help bool
@@ -18,15 +17,15 @@ type ColorOptions struct {
 }
 
 var colors = map[string]string{
-	"Reset":   "\033[0m",
-	"red":     "\033[31m",
-	"green":   "\033[32m",
-	"yellow":  "\033[33m",
-	"blue":    "\033[34m",
-	"magenta": "\033[35m",
-	"cyan":    "\033[36m",
-	"gray":    "\033[37m",
-	"white":   "\033[97m",
+	"reset":   "\033[0m",
+	"red":     "\033[38;2;255;0;0m",
+	"green":   "\033[38;2;0;255;0m",
+	"blue":    "\033[38;2;0;0;255m",
+	"yellow":  "\033[38;2;255;255;0m",
+	"magenta": "\033[38;2;255;0;255m",
+	"cyan":    "\033[38;2;0;255;255m",
+	"white":   "\033[38;2;255;255;255m",
+	"gray":    "\033[38;2;128;128;128m",
 }
 
 func (clr *Color) Help() {
@@ -49,29 +48,37 @@ func (clr *Color) Help() {
 }
 func (clr *Color) InitColor() error {
 	clr.CurrentColor = colors["red"]
-	clr.ResetColor = colors["Reset"]
+	clr.ResetColor = colors["reset"]
 	return nil
 }
 func (clr *Color) ProcessCommand(args []string) error {
-	err := clr.processFlags(args)
+	var option ColorOptions
+	err := option.processFlags(args)
 	if err != nil {
 		return err
 	}
-	if clr.set {
-		clr.processSet(args[1:])
-	} else if clr.help {
+	if option.set {
+		err = clr.processSet(args[1:])
+	} else if option.help {
 		clr.Help()
 	} else {
-		clr.processColor(args[1:])
+		err = clr.processColor(args)
+	}
+
+	if err != nil {
+		return err
 	}
 	return nil
 }
 func (clr *Color) processSet(args []string) error {
-	if len(args) > 2 {
-		return fmt.Errorf("%v is too many args to this function\nusage: color -set <name> <value>", len(args))
+	if len(args) < 3 {
+		return fmt.Errorf("%v is too few args to this function\nusage: color -set <name> <value>", len(args)-1)
 	}
-	name := args[0]
-	value := args[1]
+	if len(args) > 3 {
+		return fmt.Errorf("%v is too many args to this function\nusage: color -set <name> <value>", len(args)-1)
+	}
+	name := args[1]
+	value := args[2]
 	if len(name) > 32 {
 		return fmt.Errorf("the length of name cannot be more than 32. it is now: %v", len(name))
 	}
@@ -87,14 +94,17 @@ func (clr *Color) processSet(args []string) error {
 
 	}
 
-	ansiCode := rgbToAnsi256(r, g, b)
+	ansiCode := rgbToAnsiTrueColor(r, g, b)
 	colors[name] = fmt.Sprintf("\033[%vm", ansiCode)
 	return nil
 }
 
 func (clr *Color) processColor(args []string) error {
 
-	if len(args) > 1 {
+	if len(args) < 2 {
+		return fmt.Errorf("%v is too few args to this function\nusage: color <name_color>", len(args)-1)
+	}
+	if len(args) > 2 {
 		return fmt.Errorf("%v is too many args to this function\nusage: color <name_color>", len(args)-1)
 	}
 	c := args[1]
@@ -109,21 +119,21 @@ func (clr *Color) processColor(args []string) error {
 	return nil
 }
 
-func (clr *Color) setOption(opt string) error {
-	if clr.flagSet() {
-		return FlagCollisionError
+func (option *ColorOptions) setOption(opt string) error {
+	if option.flagSet() {
+		return ErrFlagCollision
 	}
 	switch strings.ToLower(opt) {
 	case "help":
-		clr.help = true
+		option.help = true
 	case "set":
-		clr.set = true
+		option.set = true
 	default:
 		return fmt.Errorf("%v is not a valid flag", opt)
 	}
 	return nil
 }
-func (clr *Color) processFlags(args []string) error {
+func (option *ColorOptions) processFlags(args []string) error {
 	argC := 0
 	for i, arg := range args {
 		if i == 0 {
@@ -136,7 +146,7 @@ func (clr *Color) processFlags(args []string) error {
 				return fmt.Errorf("%v is not a valid flag", flag)
 			}
 			argC += 1
-			err := clr.setOption(flag)
+			err := option.setOption(flag)
 			if err != nil {
 				return err
 			}
@@ -145,11 +155,11 @@ func (clr *Color) processFlags(args []string) error {
 	return nil
 }
 
-func (clr *Color) flagSet() bool {
-	if clr.set {
+func (opt *ColorOptions) flagSet() bool {
+	if opt.set {
 		return true
 	}
-	if clr.help {
+	if opt.help {
 		return true
 	}
 	return false

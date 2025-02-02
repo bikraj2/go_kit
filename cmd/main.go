@@ -15,7 +15,7 @@ func main() {
 	for {
 		dir := strings.TrimLeft(term.CurrDir, term.HomeDir)
 
-		fmt.Printf("%v~%v%v> ", term.CurrentColor, dir, term.Commands.Color.ResetColor)
+		fmt.Printf("%v~%v%v> ", term.Color.CurrentColor, dir, term.Color.ResetColor)
 
 		if !term.InputScanner.Scan() {
 			break

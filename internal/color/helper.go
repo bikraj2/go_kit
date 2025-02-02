@@ -9,11 +9,12 @@ import (
 )
 
 var (
-	FlagCollisionError = errors.New("flags Cannot be set at the same time.")
+	ErrFlagCollision = errors.New("flags cannot be set at the sametime")
 )
 
 var colorOptions = []string{"help", "set"}
 
+// Check if the option is valid
 func isValidOptions(option string) bool {
 	for _, opt := range colorOptions {
 		if option == opt {
@@ -23,7 +24,7 @@ func isValidOptions(option string) bool {
 	return false
 }
 
-// Converts hex to RGB
+// Convert HEX to RGB
 func hexToRGB(hex string) (int, int, int, error) {
 	hex = strings.TrimPrefix(hex, "#")
 	if len(hex) != 6 {
@@ -44,30 +45,41 @@ func hexToRGB(hex string) (int, int, int, error) {
 	return int(r), int(g), int(b), nil
 }
 
-// Maps RGB to the closest ANSI 256 color
-func rgbToAnsi256(r, g, b int) int {
-	// Grayscale (232-255)
-	if r>>4 == g>>4 && g>>4 == b>>4 {
-		grayscale := (r + g + b) / 3
-		if grayscale < 8 {
-			return 16
-		}
-		if grayscale > 238 {
-			return 231
-		}
-		return 232 + (grayscale-8)/10
-	}
-
-	// 6x6x6 Cube (16-231)
-	rIndex := (r * 5) / 255
-	gIndex := (g * 5) / 255
-	bIndex := (b * 5) / 255
-	return 16 + (rIndex*36 + gIndex*6 + bIndex)
+// Generate ANSI escape sequence for 24-bit True Color
+func rgbToAnsiTrueColor(r, g, b int) string {
+	return fmt.Sprintf("\033[38;2;%d;%d;%dm", r, g, b)
 }
 
-// Validate hex color using regex
+// Validate HEX color
 func isValidHexColor(hex string) bool {
-	// Matches #RRGGBB or #RGB
-	match, _ := regexp.MatchString(`^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$`, hex)
+	match, _ := regexp.MatchString(`^#([a-fA-F0-9]{6})$`, hex)
 	return match
+}
+
+// Process and set a new color from HEX
+func setColor(name, hex string) error {
+	if len(name) > 32 {
+		return fmt.Errorf("color name cannot exceed 32 characters: %v", len(name))
+	}
+
+	if !isValidHexColor(hex) {
+		return fmt.Errorf("%v is not a valid hex color", hex)
+	}
+
+	r, g, b, err := hexToRGB(hex)
+	if err != nil {
+		return err
+	}
+
+	colors[name] = rgbToAnsiTrueColor(r, g, b)
+	return nil
+}
+
+// Get color escape code by name
+func getColor(name string) (string, error) {
+	color, exists := colors[name]
+	if !exists {
+		return "", fmt.Errorf("color %v does not exist", name)
+	}
+	return color, nil
 }

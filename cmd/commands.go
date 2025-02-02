@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"go_kit.com/internal/Color"
+	"go_kit.com/internal/color"
 	"go_kit.com/internal/echo"
 )
 
@@ -13,8 +13,8 @@ import (
 // funtion to handle that command
 
 type Commands struct {
-	color.Color
 	echo.Echo
+	color.Color
 }
 
 func (term *Terminal) processCommand(command string) {
@@ -23,7 +23,6 @@ func (term *Terminal) processCommand(command string) {
 	term.Cmds = cmd
 
 	switch term.Cmds[0] {
-
 	case "color":
 		err := term.Commands.Color.ProcessCommand(term.Cmds)
 		if err != nil {
@@ -32,6 +31,6 @@ func (term *Terminal) processCommand(command string) {
 	// case "echo":
 	// err := term.
 	default:
-		fmt.Printf("%v is not a valid command", term.Cmds[0])
+		fmt.Printf("%v is not a valid command\n", term.Cmds[0])
 	}
 }
