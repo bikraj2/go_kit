@@ -71,13 +71,13 @@ func setColor(name, hex string) error {
 		return err
 	}
 
-	colors[name] = rgbToAnsiTrueColor(r, g, b)
+	Colors[name] = rgbToAnsiTrueColor(r, g, b)
 	return nil
 }
 
 // Get color escape code by name
 func getColor(name string) (string, error) {
-	color, exists := colors[name]
+	color, exists := Colors[name]
 	if !exists {
 		return "", fmt.Errorf("color %v does not exist", name)
 	}

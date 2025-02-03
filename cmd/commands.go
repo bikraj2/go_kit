@@ -6,6 +6,7 @@ import (
 
 	"go_kit.com/internal/color"
 	"go_kit.com/internal/echo"
+	filedir "go_kit.com/internal/file_dir"
 )
 
 // Funciton that is responsbile for figuring out if the string
@@ -15,6 +16,7 @@ import (
 type Commands struct {
 	echo.Echo
 	color.Color
+	filedir.FileDir
 }
 
 func (term *Terminal) processCommand(command string) {
@@ -28,8 +30,10 @@ func (term *Terminal) processCommand(command string) {
 		if err != nil {
 			fmt.Println(err)
 		}
-	// case "echo":
-	// err := term.
+		// case "echo":
+		// err := term.
+	case "ls":
+		term.Commands.FileDir.ProcessCommand(term.Cmds)
 	default:
 		fmt.Printf("%v is not a valid command\n", term.Cmds[0])
 	}

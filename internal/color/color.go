@@ -1,9 +1,14 @@
 package color
 
 import (
+	_ "embed"
 	"fmt"
+	"math/rand"
 	"strings"
 )
+
+//go:embed colors.txt
+var color string
 
 // Stroring some regular color for easy import.
 
@@ -16,7 +21,7 @@ type ColorOptions struct {
 	set  bool
 }
 
-var colors = map[string]string{
+var Colors = map[string]string{
 	"reset":   "\033[0m",
 	"red":     "\033[38;2;255;0;0m",
 	"green":   "\033[38;2;0;255;0m",
@@ -36,8 +41,27 @@ func (clr *Color) Help() {
 	fmt.Println("  -set <name> <hex_value>  Set a custom color with a hex value.")
 	fmt.Println("                      <name> can be any name you choose, and <hex_value> should be a valid hex color.")
 	fmt.Println("  <color_name>     Apply a predefined color to text. Available colors:")
-	for name := range colors {
-		fmt.Printf("    %v\n", name)
+
+	// Collect color names in a slice
+	var colorNames []string
+	for name := range Colors {
+		colorNames = append(colorNames, name)
+	}
+
+	// Shuffle the slice
+	rand.Shuffle(len(colorNames), func(i, j int) { colorNames[i], colorNames[j] = colorNames[j], colorNames[i] })
+
+	fmt.Println("\n  Name           │ Sample Text")
+	fmt.Println("  ---------------│-------------------")
+
+	// Print up to 10 random colors in a table format
+	limit := 10
+	if len(colorNames) < 10 {
+		limit = len(colorNames)
+	}
+	for i := 0; i < limit; i++ {
+		name := colorNames[i]
+		fmt.Printf("  %-14s │ %sSample Text%s\n", name, Colors[name], Colors["reset"])
 	}
 	fmt.Println("\nExamples:")
 	fmt.Println("  color -set myCustomColor #FF5733  Set a new custom color 'myCustomColor' with the hex value #FF5733.")
@@ -47,8 +71,23 @@ func (clr *Color) Help() {
 	fmt.Println("Note: Colors applied using this tool are for text output in terminal.")
 }
 func (clr *Color) InitColor() error {
-	clr.CurrentColor = colors["red"]
-	clr.ResetColor = colors["reset"]
+	colors := strings.Split(color, "\n")
+	for _, color_info := range colors {
+		single_color := strings.Fields(color_info)
+		if len(single_color) == 0 {
+			continue
+		}
+		r, g, b, err := hexToRGB(single_color[1])
+		if err != nil {
+			return err
+
+		}
+
+		ansiCode := rgbToAnsiTrueColor(r, g, b)
+		Colors[single_color[0]] = fmt.Sprintf("\033[%v", ansiCode)
+	}
+	clr.CurrentColor = Colors["red"]
+	clr.ResetColor = Colors["reset"]
 	return nil
 }
 func (clr *Color) ProcessCommand(args []string) error {
@@ -95,7 +134,7 @@ func (clr *Color) processSet(args []string) error {
 	}
 
 	ansiCode := rgbToAnsiTrueColor(r, g, b)
-	colors[name] = fmt.Sprintf("\033[%vm", ansiCode)
+	Colors[name] = fmt.Sprintf("\033[%vm", ansiCode)
 	return nil
 }
 
@@ -111,7 +150,7 @@ func (clr *Color) processColor(args []string) error {
 	if c == "" {
 		return fmt.Errorf("usage: color <name_color>")
 	}
-	color, exist := colors[c]
+	color, exist := Colors[c]
 	if !exist {
 		return fmt.Errorf("%v is not a valid color", c)
 	}

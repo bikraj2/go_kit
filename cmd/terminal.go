@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 )
 
@@ -46,5 +47,8 @@ func (term *Terminal) initTerminal() {
 
 	// Initaliing Dependent Struct
 	term.initInfo()
-	term.Commands.Color.InitColor()
+	err := term.Commands.Color.InitColor()
+	if err != nil {
+		fmt.Println(err)
+	}
 }
