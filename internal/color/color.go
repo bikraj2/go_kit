@@ -84,9 +84,9 @@ func (clr *Color) InitColor() error {
 		}
 
 		ansiCode := rgbToAnsiTrueColor(r, g, b)
-		Colors[single_color[0]] = fmt.Sprintf("\033[%v", ansiCode)
+		Colors[single_color[0]] = fmt.Sprintf("\033[%vm", ansiCode)
 	}
-	clr.CurrentColor = Colors["red"]
+	clr.CurrentColor = Colors["CadetBlue1"]
 	clr.ResetColor = Colors["reset"]
 	return nil
 }

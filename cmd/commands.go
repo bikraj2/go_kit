@@ -33,7 +33,11 @@ func (term *Terminal) processCommand(command string) {
 		// case "echo":
 		// err := term.
 	case "ls":
-		term.Commands.FileDir.ProcessCommand(term.Cmds)
+		term.Commands.CurrDir = term.CurrDir
+		err := term.FileDir.ProcessCommand(term.Cmds)
+		if err != nil {
+			fmt.Println(err)
+		}
 	default:
 		fmt.Printf("%v is not a valid command\n", term.Cmds[0])
 	}
