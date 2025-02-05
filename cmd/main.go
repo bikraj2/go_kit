@@ -13,8 +13,12 @@ func main() {
 	var term Terminal
 	term.initTerminal()
 	for {
-		dir := strings.TrimLeft(term.CurrDir, term.HomeDir)
-
+		var dir string
+		if term.CurrDir != term.HomeDir {
+			dir = strings.TrimLeft(term.CurrDir, term.HomeDir)
+		} else {
+			dir = term.CurrDir
+		}
 		fmt.Printf("%v~%v%v> ", term.Color.CurrentColor, dir, term.Color.ResetColor)
 
 		if !term.InputScanner.Scan() {

@@ -47,7 +47,7 @@ func hexToRGB(hex string) (int, int, int, error) {
 
 // Generate ANSI escape sequence for 24-bit True Color
 func rgbToAnsiTrueColor(r, g, b int) string {
-	return fmt.Sprintf("\033[38;2;%d;%d;%dm", r, g, b)
+	return fmt.Sprintf("\033[38;2;%d;%d;%d", r, g, b)
 }
 
 // Validate HEX color

@@ -2,9 +2,8 @@ package filedir
 
 import (
 	"fmt"
-	"strings"
-
 	"go_kit.com/internal/color"
+	"strings"
 )
 
 type Ls struct {
@@ -17,7 +16,7 @@ type LsOptions struct {
 
 var lsOptions = []string{"l"}
 
-func (l *Ls) processCommand(args []string) error {
+func (l *Ls) ProcessCommand(args []string) error {
 	err := l.processFlags(args)
 	if err != nil {
 		return err

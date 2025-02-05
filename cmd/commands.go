@@ -26,18 +26,27 @@ func (term *Terminal) processCommand(command string) {
 
 	switch term.Cmds[0] {
 	case "color":
-		err := term.Commands.Color.ProcessCommand(term.Cmds)
+		err := term.Color.ProcessCommand(term.Cmds)
 		if err != nil {
 			fmt.Println(err)
 		}
 		// case "echo":
 		// err := term.
 	case "ls":
-		term.Commands.CurrDir = term.CurrDir
-		err := term.FileDir.ProcessCommand(term.Cmds)
+		err := term.Ls.ProcessCommand(term.Cmds)
+		term.Ls.CurrDir = term.CurrDir
 		if err != nil {
 			fmt.Println(err)
 		}
+
+	case "cd":
+		term.Cd.CurrDir = term.CurrDir
+		new_dir, err := term.Cd.ProcessCommand(term.Cmds)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		term.CurrDir = new_dir
 	default:
 		fmt.Printf("%v is not a valid command\n", term.Cmds[0])
 	}
