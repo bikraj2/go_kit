@@ -27,7 +27,6 @@ func (l *Ls) ProcessCommand(args []string) error {
 		return err
 	}
 	for _, dir := range dirs {
-		fmt.Println()
 		file_info, err := dir.Info()
 		if err != nil {
 			panic(err)
@@ -48,8 +47,8 @@ func (l *Ls) ProcessCommand(args []string) error {
 		} else {
 			fmt.Printf("%v", dir.Name())
 		}
+		fmt.Println()
 	}
-	fmt.Println()
 	l.MoreInfo = false
 	return nil
 }
