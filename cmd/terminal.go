@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 type Info struct {
@@ -51,4 +52,14 @@ func (term *Terminal) initTerminal() {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+func (term *Terminal) printDir() {
+	var dir string
+	if strings.HasPrefix(term.CurrDir, term.HomeDir) {
+		dir = strings.TrimPrefix(term.CurrDir, term.HomeDir)
+	} else {
+		dir = term.CurrDir
+	}
+	fmt.Printf("%v~%v%v> ", term.Color.CurrentColor, dir, term.Color.ResetColor)
+
 }

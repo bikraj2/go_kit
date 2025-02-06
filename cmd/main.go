@@ -13,15 +13,7 @@ func main() {
 	var term Terminal
 	term.initTerminal()
 	for {
-		var dir string
-		if strings.HasPrefix(term.HomeDir, term.CurrDir) {
-			dir = term.CurrDir
-		} else {
-
-			dir = strings.TrimLeft(term.CurrDir, term.HomeDir)
-		}
-		fmt.Printf("%v~%v%v> ", term.Color.CurrentColor, dir, term.Color.ResetColor)
-
+		term.printDir()
 		if !term.InputScanner.Scan() {
 			break
 		}
