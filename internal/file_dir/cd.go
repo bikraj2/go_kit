@@ -9,6 +9,7 @@ import (
 
 type Cd struct {
 	CurrDir string
+	HomeDir string
 }
 
 func (c *Cd) ProcessCommand(args []string) (string, error) {
@@ -22,9 +23,10 @@ func (c *Cd) ProcessCommand(args []string) (string, error) {
 func (c *Cd) processDir(dir string) (string, error) {
 	parts := strings.Split(dir, "/")
 	stack := strings.Split(c.CurrDir, "/")
-	fmt.Println(len(stack))
+	for parts[0] == "~" {
+		return c.changeToHome()
+	}
 	for _, part := range parts {
-		fmt.Println(stack)
 		switch part {
 		case ".":
 		case "..":
@@ -49,4 +51,8 @@ func (c *Cd) processDir(dir string) (string, error) {
 		return "", ErrDirDoesnotExist
 	}
 	return new_dir, nil
+}
+
+func (c *Cd) changeToHome() (string, error) {
+	return c.HomeDir, nil
 }
