@@ -1,7 +1,9 @@
 package filedir
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -40,6 +42,11 @@ func (c *Cd) processDir(dir string) (string, error) {
 			continue
 		}
 		new_dir = new_dir + "/" + part
+	}
+	// Checking if the new directory is a valid directory.
+	_, err := os.Stat(new_dir)
+	if err != nil && errors.Is(err, os.ErrNotExist) {
+		return "", ErrDirDoesnotExist
 	}
 	return new_dir, nil
 }

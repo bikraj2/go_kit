@@ -14,6 +14,7 @@ func main() {
 	term.initTerminal()
 	for {
 		var dir string
+		fmt.Println(term.CurrDir)
 		if term.CurrDir != term.HomeDir {
 			dir = strings.TrimLeft(term.CurrDir, term.HomeDir)
 		} else {

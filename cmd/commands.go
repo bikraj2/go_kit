@@ -30,8 +30,11 @@ func (term *Terminal) processCommand(command string) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		// case "echo":
-		// err := term.
+	// case "echo":
+	// err := term.
+	case "clear":
+		clear()
+
 	case "ls":
 		err := term.Ls.ProcessCommand(term.Cmds)
 		term.Ls.CurrDir = term.CurrDir
