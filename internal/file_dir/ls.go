@@ -37,7 +37,7 @@ func (l *Ls) ProcessCommand(args []string) error {
 			continue
 		}
 		if l.MoreInfo {
-			fmt.Printf("%-14s %-14v", file_info.ModTime().Format("02 Jan 2006"), file_info.Size())
+			fmt.Printf("%v%-14s %v%-14s %v%-14v", color.Colors["gold"], file_info.Mode().String(), color.Colors["LightSeaGreen"], file_info.ModTime().Format("02 Jan 2006"), color.Colors["AntiqueWhite"], file_info.Size())
 		}
 		if dir.Type().IsDir() {
 
