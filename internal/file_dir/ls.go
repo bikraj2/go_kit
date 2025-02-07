@@ -11,12 +11,14 @@ type Ls struct {
 	LsOptions
 }
 type LsOptions struct {
-	MoreInfo bool
+	MoreInfo        bool
+	ShowHiddenFiles bool
 }
 
-var lsOptions = []string{"l"}
+var lsOptions = []string{"l", "a"}
 
 func (l *Ls) ProcessCommand(args []string) error {
+	defer l.resetFlags()
 	err := l.processFlags(args)
 	if err != nil {
 		return err
@@ -30,6 +32,9 @@ func (l *Ls) ProcessCommand(args []string) error {
 		file_info, err := dir.Info()
 		if err != nil {
 			panic(err)
+		}
+		if strings.HasPrefix(file_info.Name(), ".") && !l.ShowHiddenFiles {
+			continue
 		}
 		if l.MoreInfo {
 			fmt.Printf("%-14s %-14v", file_info.ModTime().Format("02 Jan 2006"), file_info.Size())
@@ -49,7 +54,6 @@ func (l *Ls) ProcessCommand(args []string) error {
 		}
 		fmt.Println()
 	}
-	l.MoreInfo = false
 	return nil
 }
 
@@ -80,6 +84,8 @@ func (lOpt *LsOptions) setOption(opt string) error {
 	switch strings.ToLower(opt) {
 	case "l":
 		lOpt.MoreInfo = true
+	case "a":
+		lOpt.ShowHiddenFiles = true
 	default:
 		return fmt.Errorf("%v is not a valid flag", opt)
 	}
@@ -87,10 +93,17 @@ func (lOpt *LsOptions) setOption(opt string) error {
 }
 
 func (lOpt *LsOptions) flagSet() bool {
-	if lOpt.MoreInfo {
-		return true
-	}
+	// if lOpt.MoreInfo {
+	// 	return true
+	// }
+	// return false
 	return false
+}
+
+func (l *Ls) resetFlags() {
+	l.MoreInfo = false
+	l.ShowHiddenFiles = false
+
 }
 
 // func ()
