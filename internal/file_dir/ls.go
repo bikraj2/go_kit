@@ -2,8 +2,11 @@ package filedir
 
 import (
 	"fmt"
-	"go_kit.com/internal/color"
+	"io/fs"
+	"sort"
 	"strings"
+
+	"go_kit.com/internal/color"
 )
 
 type Ls struct {
@@ -13,9 +16,10 @@ type Ls struct {
 type LsOptions struct {
 	MoreInfo        bool
 	ShowHiddenFiles bool
+	SortBy          string
 }
 
-var lsOptions = []string{"l", "a"}
+var lsOptions = []string{"l", "a", "s", "t"}
 
 func (l *Ls) ProcessCommand(args []string) error {
 	defer l.resetFlags()
@@ -28,10 +32,25 @@ func (l *Ls) ProcessCommand(args []string) error {
 	if err != nil {
 		return err
 	}
+
 	for _, dir := range dirs {
 		file_info, err := dir.Info()
 		if err != nil {
 			panic(err)
+		}
+		if l.SortBy != "" {
+			switch l.SortBy {
+			case "size":
+				dirs, err = SortDirEntries(dirs, "size")
+			case "time":
+
+				dirs, err = SortDirEntries(dirs, "time")
+			default:
+				dirs, err = SortDirEntries(dirs, "name")
+			}
+			if err != nil {
+				panic(err)
+			}
 		}
 		if strings.HasPrefix(file_info.Name(), ".") && !l.ShowHiddenFiles {
 			continue
@@ -83,10 +102,16 @@ func (lOpt *LsOptions) setOption(opt string) error {
 	}
 	switch strings.ToLower(opt) {
 	case "l":
+
 		lOpt.MoreInfo = true
 	case "a":
 		lOpt.ShowHiddenFiles = true
+	case "s":
+		lOpt.SortBy = "size"
+	case "t":
+		lOpt.SortBy = "t"
 	default:
+
 		return fmt.Errorf("%v is not a valid flag", opt)
 	}
 	return nil
@@ -103,7 +128,37 @@ func (lOpt *LsOptions) flagSet() bool {
 func (l *Ls) resetFlags() {
 	l.MoreInfo = false
 	l.ShowHiddenFiles = false
+	l.SortBy = ""
+}
 
+// SortDirEntries sorts the entries by a given field: "name", "size", "modtime"
+func SortDirEntries(entries []fs.DirEntry, field string) ([]fs.DirEntry, error) {
+	sort.Slice(entries, func(i, j int) bool {
+		switch field {
+		case "name":
+			return entries[i].Name() < entries[j].Name()
+
+		case "size":
+			infoI, errI := entries[i].Info()
+			infoJ, errJ := entries[j].Info()
+			if errI != nil || errJ != nil {
+				return false
+			}
+			return infoI.Size() < infoJ.Size()
+
+		case "modtime":
+			infoI, errI := entries[i].Info()
+			infoJ, errJ := entries[j].Info()
+			if errI != nil || errJ != nil {
+				return false
+			}
+			return infoI.ModTime().Before(infoJ.ModTime())
+
+		default:
+			return false
+		}
+	})
+	return entries, nil
 }
 
 // func ()

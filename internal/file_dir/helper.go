@@ -21,6 +21,7 @@ func list_file(dir string) ([]os.DirEntry, error) {
 }
 func isValidOptions(option string, validOptions []string) bool {
 	for _, opt := range validOptions {
+		print(opt)
 		if option == opt {
 			return true
 		}
