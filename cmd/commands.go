@@ -36,8 +36,8 @@ func (term *Terminal) processCommand(command string) {
 		clear()
 
 	case "ls":
-		err := term.Ls.ProcessCommand(term.Cmds)
 		term.Ls.CurrDir = term.CurrDir
+		err := term.Ls.ProcessCommand(term.Cmds)
 		if err != nil {
 			fmt.Println(err)
 		}

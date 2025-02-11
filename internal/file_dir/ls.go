@@ -27,7 +27,6 @@ func (l *Ls) ProcessCommand(args []string) error {
 	if err != nil {
 		return err
 	}
-
 	dirs, err := list_file(l.CurrDir)
 	if err != nil {
 		return err
@@ -56,7 +55,7 @@ func (l *Ls) ProcessCommand(args []string) error {
 			continue
 		}
 		if l.MoreInfo {
-			fmt.Printf("%v%-14s %v%-14s %v%-14v", color.Colors["gold"], file_info.Mode().String(), color.Colors["LightSeaGreen"], file_info.ModTime().Format("02 Jan 2006"), color.Colors["AntiqueWhite"], file_info.Size())
+			fmt.Printf("%v%-18s %v%-14s %v%-14v", color.Colors["gold"], file_info.Mode().String(), color.Colors["LightSeaGreen"], file_info.ModTime().Format("02 Jan 2006"), color.Colors["AntiqueWhite"], file_info.Size())
 		}
 		if dir.Type().IsDir() {
 
