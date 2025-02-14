@@ -19,7 +19,7 @@ type LsOptions struct {
 	SortBy          string
 }
 
-var lsOptions = []string{"l", "a", "s", "t"}
+var lsOptions = []string{"l", "a", "s", "t", "n"}
 
 func (l *Ls) ProcessCommand(args []string) error {
 	defer l.resetFlags()
@@ -105,6 +105,9 @@ func (lOpt *LsOptions) setOption(opt string) error {
 		lOpt.MoreInfo = true
 	case "a":
 		lOpt.ShowHiddenFiles = true
+	case "n":
+		// fmt.Println("here")
+		lOpt.SortBy = "name"
 	case "s":
 		lOpt.SortBy = "size"
 	case "t":
@@ -135,6 +138,7 @@ func SortDirEntries(entries []fs.DirEntry, field string) ([]fs.DirEntry, error) 
 	sort.Slice(entries, func(i, j int) bool {
 		switch field {
 		case "name":
+			// fmt.Println("here")
 			return entries[i].Name() < entries[j].Name()
 
 		case "size":
