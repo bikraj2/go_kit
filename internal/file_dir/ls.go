@@ -91,6 +91,8 @@ func (l *LsOptions) processFlags(args []string) error {
 			if err != nil {
 				return err
 			}
+		} else {
+			return fmt.Errorf("ls doesnot accept any argument")
 		}
 	}
 	return nil

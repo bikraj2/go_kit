@@ -51,6 +51,15 @@ func (term *Terminal) processCommand(command string) {
 			return
 		}
 		term.CurrDir = new_dir
+	case "mkdir":
+		term.MkDir.CurrDir = term.CurrDir
+		term.MkDir.FileMode = "755"
+		err := term.MkDir.ProcessCommand(term.Cmds)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
 	default:
 		fmt.Printf("%v is not a valid command\n", term.Cmds[0])
 	}

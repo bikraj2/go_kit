@@ -3,6 +3,7 @@ package filedir
 type FileDir struct {
 	Ls
 	Cd
+	MkDir
 }
 
 // func (fd *FileDir) ProcessCommand(args []string) error {

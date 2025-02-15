@@ -2,7 +2,10 @@ package filedir
 
 import (
 	"errors"
+	"fmt"
 	"os"
+	"strconv"
+	"syscall"
 )
 
 var (
@@ -25,4 +28,26 @@ func isValidOptions(option string, validOptions []string) bool {
 		}
 	}
 	return false
+}
+
+func create_dir(dir string, parent bool, fileMode string) error {
+	decMode, err := strconv.ParseUint(fileMode, 8, 32)
+	if err != nil {
+		return err
+	}
+	fmt.Println()
+	old_mask := syscall.Umask(0)
+	fmt.Println(decMode)
+
+	mode := os.FileMode(decMode)
+	fmt.Println(mode)
+	err = nil
+	if parent {
+		err = os.MkdirAll(dir, mode)
+	} else {
+		err = os.Mkdir(dir, mode)
+	}
+
+	syscall.Umask(old_mask)
+	return err
 }
