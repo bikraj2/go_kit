@@ -49,11 +49,13 @@ func (m *MkDir) ProcessCommand(args []string) error {
 
 func (m *MkdirOptions) processFlags(args []string) error {
 
+	start_flag_parse := false
 	for i, arg := range args {
 		if i == 0 {
 			continue
 		}
 		if strings.HasPrefix(arg, "-") {
+			start_flag_parse = true
 			flag := strings.TrimPrefix(arg, "-")
 			valid := isValidOptions(flag, validMkDirOptions)
 			if !valid {
@@ -62,7 +64,10 @@ func (m *MkdirOptions) processFlags(args []string) error {
 			err := m.setOption(flag)
 			if err != nil {
 				return err
+
 			}
+		} else if start_flag_parse {
+			return nil
 		}
 	}
 	return nil

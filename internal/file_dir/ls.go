@@ -17,9 +17,10 @@ type LsOptions struct {
 	MoreInfo        bool
 	ShowHiddenFiles bool
 	SortBy          string
+	Ascending       bool
 }
 
-var lsOptions = []string{"l", "a", "s", "t", "n"}
+var lsOptions = []string{"l", "r", "s", "t", "n", "r"}
 
 func (l *Ls) ProcessCommand(args []string) error {
 	defer l.resetFlags()
@@ -31,25 +32,17 @@ func (l *Ls) ProcessCommand(args []string) error {
 	if err != nil {
 		return err
 	}
+	if l.SortBy != "" {
+		dirs, err = SortDirEntries(dirs, l.SortBy, l.Ascending)
+		if err != nil {
+			panic(err)
+		}
+	}
 
 	for _, dir := range dirs {
 		file_info, err := dir.Info()
 		if err != nil {
 			panic(err)
-		}
-		if l.SortBy != "" {
-			switch l.SortBy {
-			case "size":
-				dirs, err = SortDirEntries(dirs, "size")
-			case "time":
-
-				dirs, err = SortDirEntries(dirs, "time")
-			default:
-				dirs, err = SortDirEntries(dirs, "name")
-			}
-			if err != nil {
-				panic(err)
-			}
 		}
 		if strings.HasPrefix(file_info.Name(), ".") && !l.ShowHiddenFiles {
 			continue
@@ -113,9 +106,10 @@ func (lOpt *LsOptions) setOption(opt string) error {
 	case "s":
 		lOpt.SortBy = "size"
 	case "t":
-		lOpt.SortBy = "t"
+		lOpt.SortBy = "time"
+	case "r":
+		lOpt.Ascending = false
 	default:
-
 		return fmt.Errorf("%v is not a valid flag", opt)
 	}
 	return nil
@@ -133,32 +127,29 @@ func (l *Ls) resetFlags() {
 	l.MoreInfo = false
 	l.ShowHiddenFiles = false
 	l.SortBy = ""
+	l.Ascending = true
 }
 
 // SortDirEntries sorts the entries by a given field: "name", "size", "modtime"
-func SortDirEntries(entries []fs.DirEntry, field string) ([]fs.DirEntry, error) {
+func SortDirEntries(entries []fs.DirEntry, field string, asc bool) ([]fs.DirEntry, error) {
 	sort.Slice(entries, func(i, j int) bool {
 		switch field {
 		case "name":
-			// fmt.Println("here")
-			return entries[i].Name() < entries[j].Name()
-
+			return asc && (entries[i].Name() > entries[j].Name())
 		case "size":
 			infoI, errI := entries[i].Info()
 			infoJ, errJ := entries[j].Info()
 			if errI != nil || errJ != nil {
 				return false
 			}
-			return infoI.Size() < infoJ.Size()
-
-		case "modtime":
+			return asc && (infoI.Size() > infoJ.Size())
+		case "time":
 			infoI, errI := entries[i].Info()
 			infoJ, errJ := entries[j].Info()
 			if errI != nil || errJ != nil {
 				return false
 			}
-			return infoI.ModTime().Before(infoJ.ModTime())
-
+			return asc && (infoI.ModTime().After(infoJ.ModTime()))
 		default:
 			return false
 		}
