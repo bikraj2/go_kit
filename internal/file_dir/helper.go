@@ -2,7 +2,6 @@ package filedir
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"strconv"
 	"syscall"
@@ -35,19 +34,14 @@ func create_dir(dir string, parent bool, fileMode string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println()
 	old_mask := syscall.Umask(0)
-	fmt.Println(decMode)
-
 	mode := os.FileMode(decMode)
-	fmt.Println(mode)
 	err = nil
 	if parent {
 		err = os.MkdirAll(dir, mode)
 	} else {
 		err = os.Mkdir(dir, mode)
 	}
-
 	syscall.Umask(old_mask)
 	return err
 }

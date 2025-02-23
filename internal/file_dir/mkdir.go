@@ -19,6 +19,7 @@ type MkdirOptions struct {
 // -p	Create parent directories as needed (e.g., mkdir -p parent/child/grandchild)
 // -m MODE	Set permissions (e.g., mkdir -m 755 new_dir)
 // -v	Print a message for each created directory (verbose mode)
+
 var validMkDirOptions = []string{"m", "p", "v"}
 
 func (m *MkDir) ProcessCommand(args []string) error {
@@ -39,14 +40,16 @@ func (m *MkDir) ProcessCommand(args []string) error {
 			continue
 		}
 		err := create_dir(arg, m.ParentDir, m.FileMode)
-
 		if err != nil {
 			return err
 		}
+		if m.Verbose {
+			fmt.Printf("%s created.\n", arg)
+		}
+
 	}
 	return nil
 }
-
 func (m *MkdirOptions) processFlags(args []string) error {
 
 	start_flag_parse := false
