@@ -4,7 +4,6 @@ go_kit is a project to emulate temrinal environment by implementing some of the 
 
 To run:
 
-
 ```
 git clone https://github.com/bikraj2/go_kit
 ```

@@ -18,11 +18,44 @@ type LsOptions struct {
 	ShowHiddenFiles bool
 	SortBy          string
 	Ascending       bool
+	Help            bool
 }
 
-var lsOptions = []string{"l", "r", "s", "t", "n", "r"}
+var lsOptions = []string{"l", "r", "s", "t", "n", "r", "help"}
 
+func Help() {
+	fmt.Println("\nLS COMMAND - CUSTOM IMPLEMENTATION")
+	fmt.Println("List directory contents with optional sorting, filtering, and detailed information.")
+	fmt.Println("\nUSAGE:")
+	fmt.Println("  ls [options]\n")
+
+	fmt.Println("OPTIONS:")
+	fmt.Println("  -l    Show detailed information (permissions, modification time, file size).")
+	fmt.Println("  -a    Include hidden files (files starting with '.').")
+	fmt.Println("  -n    Sort by name in ascending order (default).")
+	fmt.Println("  -s    Sort by file size in ascending order.")
+	fmt.Println("  -t    Sort by last modification time in ascending order.")
+	fmt.Println("  -r    Reverse the sorting order (works with -n, -s, -t).")
+	fmt.Println("\nSORTING BEHAVIOR:")
+	fmt.Println("  - By default, files are displayed in ascending order by name.")
+	fmt.Println("  - If multiple sorting flags (-n, -s, -t) are used, the last one takes precedence.")
+	fmt.Println("  - The -r flag reverses the sorting order.")
+	fmt.Println("\nEXAMPLES:")
+	fmt.Println("  ls -l           # Show detailed file information.")
+	fmt.Println("  ls -a           # List all files, including hidden ones.")
+	fmt.Println("  ls -s           # Sort files by size in ascending order.")
+	fmt.Println("  ls -t -r        # Sort files by modification time in descending order.")
+	fmt.Println("  ls -a -l -t     # Show hidden files with details, sorted by modification time.")
+	fmt.Println("\nERROR HANDLING:")
+	fmt.Println("  - If an invalid option is used, an error message is displayed.")
+	fmt.Println("  - The command does not accept additional arguments beyond options.")
+	fmt.Println("\nNOTES:")
+	fmt.Println("  - Directories are displayed with 📂 or 📁 icons depending on their contents.")
+	fmt.Println("  - Color coding is used for better readability.")
+	fmt.Println("\n")
+}
 func (l *Ls) ProcessCommand(args []string) error {
+
 	defer l.resetFlags()
 	err := l.processFlags(args)
 	if err != nil {
@@ -38,7 +71,10 @@ func (l *Ls) ProcessCommand(args []string) error {
 			panic(err)
 		}
 	}
-
+	if l.Help {
+		Help()
+		return nil
+	}
 	for _, dir := range dirs {
 		file_info, err := dir.Info()
 		if err != nil {
@@ -95,6 +131,8 @@ func (lOpt *LsOptions) setOption(opt string) error {
 		return ErrFlagCollision
 	}
 	switch strings.ToLower(opt) {
+	case "help":
+		lOpt.Help = true
 	case "l":
 
 		lOpt.MoreInfo = true
@@ -120,7 +158,7 @@ func (lOpt *LsOptions) flagSet() bool {
 	// 	return true
 	// }
 	// return false
-	return false
+	return lOpt.Help
 }
 
 func (l *Ls) resetFlags() {
@@ -128,6 +166,7 @@ func (l *Ls) resetFlags() {
 	l.ShowHiddenFiles = false
 	l.SortBy = ""
 	l.Ascending = true
+	l.Help = false
 }
 
 // SortDirEntries sorts the entries by a given field: "name", "size", "modtime"
