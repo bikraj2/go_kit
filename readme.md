@@ -52,7 +52,7 @@ You can use the following commands in `go_kit`. Each command supports the `-help
 Example:
 
 ```bash
-gokit ls -help
+ls -help
 ```
 
 ---
