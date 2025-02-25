@@ -21,7 +21,7 @@ type LsOptions struct {
 	Help            bool
 }
 
-var lsOptions = []string{"l", "r", "s", "t", "n", "r", "help"}
+var lsOptions = []string{"l", "a", "s", "t", "n", "r", "help"}
 
 func Help() {
 	fmt.Println("\nLS COMMAND - CUSTOM IMPLEMENTATION")

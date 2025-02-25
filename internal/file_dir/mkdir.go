@@ -74,7 +74,7 @@ func (m *MkDir) ProcessCommand(args []string) error {
 		// fmt.Println(i, args[i])
 		if i > 0 && args[i-1] == "-m" {
 			if _, err := strconv.ParseInt(args[i], 10, 32); err != nil {
-				return fmt.Errorf("Enter Valid file mode")
+				return fmt.Errorf("enter Valid file mode")
 			}
 			m.FileMode = args[i]
 			continue
