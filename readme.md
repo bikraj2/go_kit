@@ -10,12 +10,11 @@
 
 Below is an example of `go_kit` in action:
 
-
-![Alt Text](assets/go_kit.gif)
+![Alt Text](./assets/go_kit.gif)
 
 ---
 
-##  Table of Contents
+## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -26,7 +25,7 @@ Below is an example of `go_kit` in action:
 
 ---
 
-##  Installation
+## Installation
 
 Ensure you have Go installed (>= 1.20). Then, clone the repository and run:
 
@@ -41,7 +40,7 @@ go run ./cmd
 
 ---
 
-##  Usage
+## Usage
 
 You can use the following commands in `go_kit`. Each command supports the `-help` flag for documentation:
 
@@ -59,26 +58,26 @@ gokit ls -help
 
 ## Features
 
-| Command  | Description                       |
-|----------|-----------------------------------|
-| `ls`     | List directory contents          |
-| `clear`  | Clears the terminal screen       |
-| `cd`     | Change the current directory     |
-| `color`  | Customize terminal colors        |
-| `mkdir`  | Create new directories           |
+| Command | Description                  |
+| ------- | ---------------------------- |
+| `ls`    | List directory contents      |
+| `clear` | Clears the terminal screen   |
+| `cd`    | Change the current directory |
+| `color` | Customize terminal colors    |
+| `mkdir` | Create new directories       |
 
 ---
 
-##  Planned Features
+## Planned Features
 
-- [ ] `echo` - Print arguments to output  
-- [ ] `| (pipe)` - Pipe output from one command to another  
-- [ ] `curl` - Fetch data from a URL  
-- [ ] `grep` - Search for patterns in text  
+- [ ] `echo` - Print arguments to output
+- [ ] `| (pipe)` - Pipe output from one command to another
+- [ ] `curl` - Fetch data from a URL
+- [ ] `grep` - Search for patterns in text
 
 ---
 
-##  Contributing
+## Contributing
 
 Contributions are welcome! To contribute:
 
@@ -90,11 +89,12 @@ Contributions are welcome! To contribute:
 
 ---
 
-##  License
+## License
 
 This project is licensed under the MIT License.
 
 ---
 
 ### ⭐ Show Some Love
+
 If you like this project, give it a ⭐ on GitHub!
