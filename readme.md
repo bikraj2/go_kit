@@ -10,7 +10,8 @@
 
 Below is an example of `go_kit` in action:
 
-<img src="assets/go_kit.gif" width="500" height="300">
+
+![Alt Text](assets/go_kit.gif)
 
 ---
 
