@@ -20,7 +20,6 @@ type Commands struct {
 }
 
 func (term *Terminal) processCommand(command string) {
-
 	cmd := strings.Split(command, " ")
 	term.Cmds = cmd
 
@@ -55,6 +54,13 @@ func (term *Terminal) processCommand(command string) {
 		term.MkDir.CurrDir = term.CurrDir
 		term.MkDir.FileMode = "755"
 		err := term.MkDir.ProcessCommand(term.Cmds)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	case "pwd":
+		term.Pwd.CurrDir = term.CurrDir
+		err := term.Pwd.ProcessCommand(term.Cmds)
 		if err != nil {
 			fmt.Println(err)
 			return

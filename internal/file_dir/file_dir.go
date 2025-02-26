@@ -4,6 +4,7 @@ type FileDir struct {
 	Ls
 	Cd
 	MkDir
+	Pwd
 }
 
 // func (fd *FileDir) ProcessCommand(args []string) error {

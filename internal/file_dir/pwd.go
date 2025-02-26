@@ -2,6 +2,7 @@ package filedir
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 )
 
@@ -10,33 +11,61 @@ type Pwd struct {
 	PwdOptions
 }
 type PwdOptions struct {
-	L bool
-	P bool
+	L    bool
+	P    bool
+	Help bool
 }
 
-var pwdValidOptions = []string{"l", "p"}
+var pwdValidOptions = []string{"l", "p", "help"}
 
 func HelpPwd() {
+
+	fmt.Println(`Usage: pwd [OPTION]
+Print the full filename of the current working directory.
+
+Options:
+  -L    Print the logical current working directory (default).
+  -P    Print the physical current working directory (resolving symlinks).
+
+Examples:
+  pwd         # Prints the logical working directory.
+  pwd -P      # Prints the physical working directory (resolves symlinks).
+  pwd -L      # Explicitly prints the logical working directory.
+
+Note:
+  If both -L and -P are specified, an error will be thrown due to flag collision.`)
 }
 func (p *Pwd) ProcessCommand(args []string) error {
 
 	defer p.resetFlags()
+
 	err := p.processFlags(args[1:])
 	if err != nil {
 		return err
 	}
+	if p.Help {
+		HelpPwd()
+		return nil
+	}
+
+	dir := p.CurrDir
+	if p.P {
+		dir, err = filepath.EvalSymlinks(p.CurrDir)
+		fmt.Println("Resolving physical link")
+		if err != nil {
+			return err
+		}
+	}
+	fmt.Println(dir)
 	return nil
 }
-
 func (p *PwdOptions) processFlags(args []string) error {
 
-	for i, arg := range args {
-		if i == 0 {
-			continue
-		}
+	for _, arg := range args {
+
 		if strings.HasPrefix(arg, "-") {
 			flag := strings.TrimPrefix(arg, "-")
-			valid := isValidOptions(flag, lsOptions)
+			valid := isValidOptions(flag, pwdValidOptions)
 			if !valid {
 				return fmt.Errorf("%v is not a valid flag", flag)
 			}
@@ -66,10 +95,10 @@ func (pOpt *PwdOptions) setOption(opt string) error {
 }
 
 func (pOpt *PwdOptions) flagSet() bool {
-	return pOpt.L || pOpt.P
+	return pOpt.L || pOpt.P || pOpt.Help
 }
 
 func (p *Pwd) resetFlags() {
-	p.L = true
+	p.L = false
 	p.P = false
 }
