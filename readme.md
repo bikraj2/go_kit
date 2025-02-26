@@ -15,7 +15,6 @@ Below is an example of `go_kit` in action:
 ---
 
 ## Table of Contents
-
 - [Installation](#installation)
 - [Usage](#usage)
 - [Features](#features)
@@ -65,6 +64,8 @@ ls -help
 | `cd`    | Change the current directory |
 | `color` | Customize terminal colors    |
 | `mkdir` | Create new directories       |
+| `pwd`   | Get the current direcotry|
+
 
 ---
 
