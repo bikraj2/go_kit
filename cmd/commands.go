@@ -65,7 +65,11 @@ func (term *Terminal) processCommand(command string) {
 			fmt.Println(err)
 			return
 		}
-
+	case "echo":
+		err := term.Echo.ProcessCommands(term.Cmds[1:])
+		if err != nil {
+			fmt.Println(err)
+		}
 	default:
 		fmt.Printf("%v is not a valid command\n", term.Cmds[0])
 	}

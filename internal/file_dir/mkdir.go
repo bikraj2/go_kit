@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	helper "go_kit.com/internal"
 )
 
 type MkDir struct {
@@ -55,6 +57,7 @@ func HelpMkDir() {
 	fmt.Println("  mkdir -v project         # Create 'project' and print a confirmation message.")
 	fmt.Println("  mkdir -p -m 700 data/logs # Create 'data/logs' with 700 permissions if missing.")
 }
+
 func (m *MkDir) ProcessCommand(args []string) error {
 	defer m.resetFlags()
 	err := m.processFlags(args)
@@ -80,7 +83,7 @@ func (m *MkDir) ProcessCommand(args []string) error {
 			continue
 		}
 		count += 1
-		err := create_dir(arg, m.ParentDir, m.FileMode)
+		err := helper.Create_dir(arg, m.ParentDir, m.FileMode)
 		if err != nil {
 			return err
 		}
@@ -104,7 +107,7 @@ func (m *MkdirOptions) processFlags(args []string) error {
 		if strings.HasPrefix(arg, "-") {
 			start_flag_parse = true
 			flag := strings.TrimPrefix(arg, "-")
-			valid := isValidOptions(flag, validMkDirOptions)
+			valid := helper.IsValidOptions(flag, validMkDirOptions)
 			if !valid {
 				return fmt.Errorf("%v is not a valid flag", flag)
 			}
@@ -119,9 +122,10 @@ func (m *MkdirOptions) processFlags(args []string) error {
 	}
 	return nil
 }
+
 func (mOpt *MkdirOptions) setOption(opt string) error {
 	if mOpt.flagSet() && opt == "help" || mOpt.Help {
-		return ErrFlagCollision
+		return helper.ErrFlagCollision
 	}
 	switch strings.ToLower(opt) {
 	case "help":

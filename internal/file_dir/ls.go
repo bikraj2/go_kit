@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	helper "go_kit.com/internal"
 	"go_kit.com/internal/color"
 )
 
@@ -61,7 +62,7 @@ func (l *Ls) ProcessCommand(args []string) error {
 	if err != nil {
 		return err
 	}
-	dirs, err := list_file(l.CurrDir)
+	dirs, err := helper.List_file(l.CurrDir)
 	if err != nil {
 		return err
 	}
@@ -112,7 +113,7 @@ func (l *LsOptions) processFlags(args []string) error {
 		}
 		if strings.HasPrefix(arg, "-") {
 			flag := strings.TrimPrefix(arg, "-")
-			valid := isValidOptions(flag, lsOptions)
+			valid := helper.IsValidOptions(flag, lsOptions)
 			if !valid {
 				return fmt.Errorf("%v is not a valid flag", flag)
 			}
@@ -128,7 +129,7 @@ func (l *LsOptions) processFlags(args []string) error {
 }
 func (lOpt *LsOptions) setOption(opt string) error {
 	if lOpt.flagSet() {
-		return ErrFlagCollision
+		return helper.ErrFlagCollision
 	}
 	switch strings.ToLower(opt) {
 	case "help":

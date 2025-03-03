@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	helper "go_kit.com/internal"
 )
 
 type Cd struct {
@@ -90,7 +92,7 @@ func (c *Cd) parseAbsPath(dir string) (string, error) {
 	// Checking if the new directory is a valid directory.
 	_, err := os.Stat(new_dir)
 	if err != nil && errors.Is(err, os.ErrNotExist) {
-		return "", ErrDirDoesnotExist
+		return "", helper.ErrDirDoesnotExist
 	}
 	return new_dir, nil
 
@@ -121,7 +123,7 @@ func (c *Cd) parserRelativePath(dir string) (string, error) {
 	// Checking if the new directory is a valid directory.
 	_, err := os.Stat(new_dir)
 	if err != nil && errors.Is(err, os.ErrNotExist) {
-		return "", ErrDirDoesnotExist
+		return "", helper.ErrDirDoesnotExist
 	}
 	return new_dir, nil
 }

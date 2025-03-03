@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+
+	helper "go_kit.com/internal"
 )
 
 type Pwd struct {
@@ -65,7 +67,7 @@ func (p *PwdOptions) processFlags(args []string) error {
 
 		if strings.HasPrefix(arg, "-") {
 			flag := strings.TrimPrefix(arg, "-")
-			valid := isValidOptions(flag, pwdValidOptions)
+			valid := helper.IsValidOptions(flag, pwdValidOptions)
 			if !valid {
 				return fmt.Errorf("%v is not a valid flag", flag)
 			}
@@ -81,7 +83,7 @@ func (p *PwdOptions) processFlags(args []string) error {
 }
 func (pOpt *PwdOptions) setOption(opt string) error {
 	if pOpt.flagSet() {
-		return ErrFlagCollision
+		return helper.ErrFlagCollision
 	}
 	switch strings.ToLower(opt) {
 	case "l":

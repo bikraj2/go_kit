@@ -1,4 +1,4 @@
-package filedir
+package helper
 
 import (
 	"errors"
@@ -12,7 +12,7 @@ var (
 	ErrDirDoesnotExist = errors.New("dir doesnot exist")
 )
 
-func list_file(dir string) ([]os.DirEntry, error) {
+func List_file(dir string) ([]os.DirEntry, error) {
 
 	dirs_local, err := os.ReadDir(dir)
 	if err != nil {
@@ -20,7 +20,7 @@ func list_file(dir string) ([]os.DirEntry, error) {
 	}
 	return dirs_local, nil
 }
-func isValidOptions(option string, validOptions []string) bool {
+func IsValidOptions(option string, validOptions []string) bool {
 	for _, opt := range validOptions {
 		if option == opt {
 			return true
@@ -29,7 +29,7 @@ func isValidOptions(option string, validOptions []string) bool {
 	return false
 }
 
-func create_dir(dir string, parent bool, fileMode string) error {
+func Create_dir(dir string, parent bool, fileMode string) error {
 	decMode, err := strconv.ParseUint(fileMode, 8, 32)
 	if err != nil {
 		return err
