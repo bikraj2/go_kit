@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strings"
 
 	"go_kit.com/internal/color"
 	"go_kit.com/internal/echo"
@@ -19,9 +18,7 @@ type Commands struct {
 	filedir.FileDir
 }
 
-func (term *Terminal) processCommand(command string) {
-	cmd := strings.Split(command, " ")
-	term.Cmds = cmd
+func (term *Terminal) processCommand() {
 
 	switch term.Cmds[0] {
 	case "color":
