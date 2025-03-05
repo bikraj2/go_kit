@@ -63,7 +63,7 @@ func (term *Terminal) processCommand() {
 			return
 		}
 	case "echo":
-		err := term.Echo.ProcessCommands(term.Cmds[1:])
+		err := term.ProcessCommands(term.Cmds[1:])
 		if err != nil {
 			fmt.Println(err)
 		}

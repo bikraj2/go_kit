@@ -2,6 +2,7 @@ package echo
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -61,25 +62,38 @@ func (echo *Echo) ProcessCommands(args []string) error {
 	// 		}
 	// 	}
 	// }
+
+	var out io.Writer
 	switch echo.Redirect {
 	case "":
-		if echo.NewLine {
-			fmt.Println(echo.Text)
-		} else {
-			fmt.Println(echo.Text)
-		}
-	case "<":
-		file, err := os.Create(echo.FileName)
+		out = os.Stdout
+	case ">":
+		file, err := os.OpenFile(echo.FileName, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 		if err != nil {
 			return err
 		}
-		file.Write([]byte(echo.Text))
+		defer file.Close()
+		out = file
+	case ">>":
+		file, err := os.OpenFile(echo.FileName, os.O_APPEND|os.O_WRONLY, 0644)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		out = file
 	}
-
+	// -e -> write to Buffer else Fprintf
+	// -n -> write with line else dont
+	if echo.EscapeCharacter {
+		_, err = fmt.Fprintln(out, echo.Text)
+	} else {
+		_, err = fmt.Fprintf(out, "%s\n", echo.Text)
+	}
+	if err != nil {
+		return err
+	}
 	return nil
-
 }
-
 func (echo *Echo) processFlags(args []string) error {
 	start_flag_parse := false
 	for i, arg := range args {
