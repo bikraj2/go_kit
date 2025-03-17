@@ -2,42 +2,42 @@ name: CI
 on:
   pull_request:
     branches: [main]
-  jobs:
-    tests:
-      name: Tests
-      runs-on: ubuntu-latest
+jobs:
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Check out code
-          uses: actions/checkout@v4
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
 
-        - name: Set up Go
-          uses: actions/setup-go@v5
-          with:
-            go-version: "1.22.x" # Fixed Go version
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22.x" # Fixed Go version
 
-        - name: Check Go version
-          run: go version
+      - name: Check Go version
+        run: go version
 
-        - name: Run tests
-          run: go test --cover ./...
+      - name: Run tests
+        run: go test --cover ./...
 
-        - name: Install gosec
-          run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+      - name: Install gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
 
-        - name: Run Security Check
-          run: gosec ./...
+      - name: Run Security Check
+        run: gosec ./...
 
-    style:
-      name: Style Checks
-      runs-on: ubuntu-latest
+  style:
+    name: Style Checks
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Check out code
-          uses: actions/checkout@v4
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
 
-        - name: Install StaticCheck
-          run: go install honnef.co/go/tools/cmd/staticcheck@latest
+      - name: Install StaticCheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
 
-        - name: Run Static Analysis
-          run: staticcheck ./...
+      - name: Run Static Analysis
+        run: staticcheck ./...
