@@ -48,7 +48,7 @@ func (term *Terminal) initTerminal() {
 
 	// Initaliing Dependent Struct
 	term.initInfo()
-	err := term.Commands.Color.InitColor()
+	err := term.InitColor()
 	if err != nil {
 		fmt.Println(err)
 	}

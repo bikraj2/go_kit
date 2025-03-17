@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 
 	helper "go_kit.com/internal"
@@ -35,6 +36,7 @@ func (echo *Echo) ProcessCommands(args []string) error {
 	textParts := []string{}
 	parsingFlags := true
 	for i, arg := range args {
+
 		if strings.HasPrefix(arg, "-") {
 			if !parsingFlags {
 				return fmt.Errorf("usage: echo [flag] <string> [redirection, file_name]")
@@ -85,9 +87,16 @@ func (echo *Echo) ProcessCommands(args []string) error {
 	// -e -> write to Buffer else Fprintf
 	// -n -> write with line else dont
 	if echo.EscapeCharacter {
-		_, err = fmt.Fprintln(out, echo.Text)
-	} else {
 		_, err = fmt.Fprintf(out, "%s\n", echo.Text)
+	} else {
+		// Convert the string to a slice of runes to handle escape sequences as literal characters
+		quotedText := `"` + echo.Text + `"`
+		unquoted, err := strconv.Unquote(quotedText)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		fmt.Println(unquoted)
 	}
 	if err != nil {
 		return err
@@ -96,10 +105,7 @@ func (echo *Echo) ProcessCommands(args []string) error {
 }
 func (echo *Echo) processFlags(args []string) error {
 	start_flag_parse := false
-	for i, arg := range args {
-		if i == 0 {
-			continue
-		}
+	for _, arg := range args {
 		if strings.HasPrefix(arg, "-") {
 			start_flag_parse = true
 			flag := strings.TrimPrefix(arg, "-")

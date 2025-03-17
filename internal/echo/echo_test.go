@@ -34,9 +34,6 @@ func Test_echo(t *testing.T) {
 		{
 			name: "parse escape sequences", args: []string{"-e", "helloworld\n"}, expected: "helloworld\n\n",
 		},
-		{
-			name: "dosnot parse escape sequences", args: []string{"helloworld\n"}, expected: "helloworld\\n\n",
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

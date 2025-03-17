@@ -41,7 +41,7 @@ func (term *Terminal) processCommand() {
 	case "cd":
 		term.Cd.CurrDir = term.CurrDir
 		term.Cd.HomeDir = term.HomeDir
-		new_dir, err := term.Cd.ProcessCommand(term.Cmds)
+		new_dir, err := term.Cd.ProcessCommand(term.Cmds[1:])
 		if err != nil {
 			fmt.Println(err)
 			return
