@@ -65,14 +65,12 @@ ls -help
 | `color` | Customize terminal colors    |
 | `mkdir` | Create new directories       |
 | `pwd`   | Get the current direcotry|
+| `echo`   | Print arguments to output
 
 
 ---
 
 ## Planned Features
-
-
-- [ ] `echo` - Print arguments to output
 - [ ] `| (pipe)` - Pipe output from one command to another
 - [ ] `curl` - Fetch data from a URL
 - [ ] `grep` - Search for patterns in text
