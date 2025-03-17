@@ -28,7 +28,7 @@ func Help() {
 	fmt.Println("\nLS COMMAND - CUSTOM IMPLEMENTATION")
 	fmt.Println("List directory contents with optional sorting, filtering, and detailed information.")
 	fmt.Println("\nUSAGE:")
-	fmt.Println("  ls [options]\n")
+	fmt.Println("  ls [options]")
 
 	fmt.Println("OPTIONS:")
 	fmt.Println("  -l    Show detailed information (permissions, modification time, file size).")
@@ -53,7 +53,7 @@ func Help() {
 	fmt.Println("\nNOTES:")
 	fmt.Println("  - Directories are displayed with 📂 or 📁 icons depending on their contents.")
 	fmt.Println("  - Color coding is used for better readability.")
-	fmt.Println("\n")
+	fmt.Println("")
 }
 func (l *Ls) ProcessCommand(args []string) error {
 

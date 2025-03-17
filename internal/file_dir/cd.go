@@ -17,7 +17,6 @@ type Cd struct {
 func HelpCd() {
 	fmt.Println("\nCD COMMAND - CUSTOM IMPLEMENTATION")
 	fmt.Println("Change the current directory to a specified path.")
-
 	fmt.Println("USAGE:")
 	fmt.Println("  cd <directory>")
 
@@ -44,17 +43,17 @@ func HelpCd() {
 	fmt.Println("  cd .              # Stay in the current directory.")
 }
 func (c *Cd) ProcessCommand(args []string) (string, error) {
-	if len(args) > 2 {
+	if len(args) > 1 {
 		return c.CurrDir, fmt.Errorf("%v is too many arguments\nUsage: cd <dir>", len(args)-1)
 	}
-	if strings.HasPrefix(args[1], "-") {
+	if strings.HasPrefix(args[0], "-") {
 		if args[1] != "-help" {
 			return "", fmt.Errorf("cd only supports -help flag")
 		}
 		HelpCd()
 		return c.CurrDir, nil
 	}
-	new_dir, err := c.processDir(args[1])
+	new_dir, err := c.processDir(args[0])
 	return new_dir, err
 }
 

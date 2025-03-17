@@ -1,12 +1,8 @@
 name: CI
-
 on:
   pull_request:
     branches: [main]
-  push:
-    branches: [main]
-
-jobs:
+  jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
