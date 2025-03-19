@@ -1,26 +1,11 @@
 package echo_test
 
 import (
-	"io"
-	"os"
 	"testing"
 
+	helper "go_kit.com/internal"
 	"go_kit.com/internal/echo"
 )
-
-func captureStdout(f func()) string {
-	old := os.Stdout     // Save current stdout
-	r, w, _ := os.Pipe() // Create pipe
-	os.Stdout = w
-
-	f() // Run the function that prints to stdout
-
-	// Restore stdout and read from the pipe
-	w.Close()
-	os.Stdout = old
-	out, _ := io.ReadAll(r)
-	return string(out)
-}
 
 func Test_echo(t *testing.T) {
 	tests := []struct {
@@ -38,7 +23,7 @@ func Test_echo(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			output := captureStdout(func() {
+			output := helper.CaptureStdout(func() {
 				e := echo.Echo{}
 				e.ProcessCommands(tt.args)
 			})

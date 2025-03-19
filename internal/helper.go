@@ -2,14 +2,16 @@ package helper
 
 import (
 	"errors"
+	"io"
 	"os"
 	"strconv"
 	"syscall"
 )
 
 var (
-	ErrFlagCollision   = errors.New("flags cannot be set at the sametime")
-	ErrDirDoesnotExist = errors.New("dir doesnot exist")
+	ErrFlagCollision    = errors.New("flags cannot be set at the sametime")
+	ErrInvalidNoOfFlags = errors.New("")
+	ErrDirDoesnotExist  = errors.New("dir doesnot exist")
 )
 
 func List_file(dir string) ([]os.DirEntry, error) {
@@ -44,4 +46,17 @@ func Create_dir(dir string, parent bool, fileMode string) error {
 	}
 	syscall.Umask(old_mask)
 	return err
+}
+func CaptureStdout(f func()) string {
+	old := os.Stdout     // Save current stdout
+	r, w, _ := os.Pipe() // Create pipe
+	os.Stdout = w
+
+	f() // Run the function that prints to stdout
+
+	// Restore stdout and read from the pipe
+	w.Close()
+	os.Stdout = old
+	out, _ := io.ReadAll(r)
+	return string(out)
 }

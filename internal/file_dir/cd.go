@@ -43,7 +43,7 @@ func HelpCd() {
 }
 func (c *Cd) ProcessCommand(args []string) (string, error) {
 	if len(args) > 1 {
-		return c.CurrDir, fmt.Errorf("%v is too many arguments\nUsage: cd <dir>", len(args)-1)
+		return c.CurrDir, fmt.Errorf("%w %v is too many arguments\nUsage: cd <dir>", helper.ErrInvalidNoOfFlags, len(args)-1)
 	}
 	if strings.HasPrefix(args[0], "-") {
 		if args[1] != "-help" {
@@ -152,6 +152,7 @@ func (c *Cd) parserRelativePath(dir string) (string, error) {
 	return new_dir, nil
 }
 
-func (c *Cd) changeToHome() (string, error) {
-	return c.HomeDir, nil
-}
+//
+// func (c *Cd) changeToHome() (string, error) {
+// 	return c.HomeDir, nil
+// }
