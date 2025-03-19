@@ -57,7 +57,7 @@ func (term *Terminal) processCommand() {
 		}
 	case "pwd":
 		term.Pwd.CurrDir = term.CurrDir
-		err := term.Pwd.ProcessCommand(term.Cmds)
+		err := term.Pwd.ProcessCommand(term.Cmds[1:])
 		if err != nil {
 			fmt.Println(err)
 			return

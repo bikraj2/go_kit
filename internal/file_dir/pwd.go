@@ -38,10 +38,10 @@ Note:
   If both -L and -P are specified, an error will be thrown due to flag collision.`)
 }
 func (p *Pwd) ProcessCommand(args []string) error {
-
+	// fmt.Println("here")
 	defer p.resetFlags()
 
-	err := p.processFlags(args[1:])
+	err := p.processFlags(args)
 	if err != nil {
 		return err
 	}
@@ -49,15 +49,16 @@ func (p *Pwd) ProcessCommand(args []string) error {
 		HelpPwd()
 		return nil
 	}
-
 	dir := p.CurrDir
 	if p.P {
+
 		dir, err = filepath.EvalSymlinks(p.CurrDir)
-		fmt.Println("Resolving physical link")
+		// fmt.Println("Resolving physical link")
 		if err != nil {
 			return err
 		}
 	}
+
 	fmt.Println(dir)
 	return nil
 }
@@ -90,6 +91,9 @@ func (pOpt *PwdOptions) setOption(opt string) error {
 		pOpt.L = true
 	case "p":
 		pOpt.P = true
+	case "help":
+		pOpt.Help = true
+
 	default:
 		return fmt.Errorf("%v is not a valid flag", opt)
 	}
@@ -103,4 +107,5 @@ func (pOpt *PwdOptions) flagSet() bool {
 func (p *Pwd) resetFlags() {
 	p.L = false
 	p.P = false
+	p.Help = false
 }

@@ -2,6 +2,7 @@ package helper
 
 import (
 	"errors"
+	"io"
 	"os"
 	"strconv"
 	"syscall"
@@ -45,4 +46,17 @@ func Create_dir(dir string, parent bool, fileMode string) error {
 	}
 	syscall.Umask(old_mask)
 	return err
+}
+func CaptureStdout(f func()) string {
+	old := os.Stdout     // Save current stdout
+	r, w, _ := os.Pipe() // Create pipe
+	os.Stdout = w
+
+	f() // Run the function that prints to stdout
+
+	// Restore stdout and read from the pipe
+	w.Close()
+	os.Stdout = old
+	out, _ := io.ReadAll(r)
+	return string(out)
 }
