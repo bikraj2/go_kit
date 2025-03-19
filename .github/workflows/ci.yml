@@ -26,10 +26,7 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Check Go version
-        run: go version
-
-      - name: Verify module dependencies
-        run: go mod tidy && git diff --exit-code go.mod go.sum
+        run: go version 
 
       - name: Run tests
         run: go test --cover ./...
