@@ -43,7 +43,7 @@ func HelpCd() {
 }
 func (c *Cd) ProcessCommand(args []string) (string, error) {
 	if len(args) > 1 {
-		return c.CurrDir, fmt.Errorf("%v is too many arguments\nUsage: cd <dir>", len(args)-1)
+		return c.CurrDir, fmt.Errorf("%w %v is too many arguments\nUsage: cd <dir>", helper.ErrInvalidNoOfFlags, len(args)-1)
 	}
 	if strings.HasPrefix(args[0], "-") {
 		if args[1] != "-help" {

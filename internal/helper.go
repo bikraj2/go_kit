@@ -8,8 +8,9 @@ import (
 )
 
 var (
-	ErrFlagCollision   = errors.New("flags cannot be set at the sametime")
-	ErrDirDoesnotExist = errors.New("dir doesnot exist")
+	ErrFlagCollision    = errors.New("flags cannot be set at the sametime")
+	ErrInvalidNoOfFlags = errors.New("")
+	ErrDirDoesnotExist  = errors.New("dir doesnot exist")
 )
 
 func List_file(dir string) ([]os.DirEntry, error) {

@@ -60,6 +60,13 @@ func Test_cd(t *testing.T) {
 			expected:       "",
 		},
 		{
+			name:           "invalid no of args",
+			args:           []string{"./asdfasdfastest_env/random/../../test_env/first_1/second_1/third_9/", "asdfasdf"},
+			expected_error: helper.ErrInvalidNoOfFlags,
+			expected:       "",
+		},
+
+		{
 			name:     "root Dir",
 			args:     []string{"~/Projects"},
 			expected: filepath.Join(homeDir, "Projects"),
@@ -75,8 +82,7 @@ func Test_cd(t *testing.T) {
 				if !errors.Is(err, tt.expected_error) {
 					t.Error(err)
 				}
-			}
-			if dir != tt.expected {
+			} else if dir != tt.expected {
 				t.Errorf("expected: %s\n got:%s \n", tt.expected, dir)
 			}
 		})
