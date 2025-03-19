@@ -152,6 +152,7 @@ func (c *Cd) parserRelativePath(dir string) (string, error) {
 	return new_dir, nil
 }
 
-func (c *Cd) changeToHome() (string, error) {
-	return c.HomeDir, nil
-}
+//
+// func (c *Cd) changeToHome() (string, error) {
+// 	return c.HomeDir, nil
+// }

@@ -137,14 +137,15 @@ func createDir(root string, dirs []string) error {
 	return nil
 }
 
-func removeDir(root string, dirs []string) error {
-
-	for _, dir := range dirs {
-		path := filepath.Join(root, dir)
-		err := os.Remove(path)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
+//
+// func removeDir(root string, dirs []string) error {
+//
+// 	for _, dir := range dirs {
+// 		path := filepath.Join(root, dir)
+// 		err := os.Remove(path)
+// 		if err != nil {
+// 			return err
+// 		}
+// 	}
+// 	return nil
+// }

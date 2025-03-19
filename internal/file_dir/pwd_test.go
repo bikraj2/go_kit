@@ -17,6 +17,7 @@ func Test_pwd(t *testing.T) {
 		t.Fatal(err)
 	}
 	real_dir, sym_dir := setup(t)
+	defer teardown(real_dir)
 	tests := []struct {
 		name           string
 		args           []string
