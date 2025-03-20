@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 	"strings"
 
 	helper "go_kit.com/internal"
@@ -21,13 +20,42 @@ type Echo struct {
 type EchoOptions struct {
 	NewLine         bool
 	EscapeCharacter bool
+	ShowHelp        bool
 }
 
-var echoValidOptions = []string{"n", "e"}
+var echoValidOptions = []string{"n", "e", "help"}
 
+func (echo *Echo) Help() {
+	helpText := `
+Usage: echo [options] <string> [redirection] [file_name]
+
+Options:
+  -n    Do not output the trailing newline
+  -e    Enable interpretation of backslash escapes
+
+Redirection:
+  >     Redirect output to a file (overwrite)
+  >>    Append output to a file
+  <     Read input from a file (not implemented)
+  <<    Read input from a here-document (not implemented)
+
+Examples:
+  echo "Hello, World!"
+  echo -n "No newline at the end"
+  echo -e "Line1\nLine2"
+  echo "Save to file" > output.txt
+  echo "Append to file" >> output.txt
+`
+
+	fmt.Println(helpText)
+}
 func (echo *Echo) ProcessCommands(args []string) error {
 
 	err := echo.processFlags(args)
+	if echo.ShowHelp {
+		echo.Help()
+		return nil
+	}
 	if err != nil {
 		return err
 	}
@@ -86,17 +114,14 @@ func (echo *Echo) ProcessCommands(args []string) error {
 	}
 	// -e -> write to Buffer else Fprintf
 	// -n -> write with line else dont
+	if echo.NewLine {
+		echo.Text = echo.Text + "\n"
+	}
 	if echo.EscapeCharacter {
-		_, err = fmt.Fprintf(out, "%s\n", echo.Text)
+		_, err = fmt.Fprintf(out, "%s", echo.Text)
 	} else {
 		// Convert the string to a slice of runes to handle escape sequences as literal characters
-		quotedText := `"` + echo.Text + `"`
-		unquoted, err := strconv.Unquote(quotedText)
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
-		fmt.Println(unquoted)
+		_, err = fmt.Fprintf(out, "%s", echo.Text)
 	}
 	if err != nil {
 		return err
@@ -130,8 +155,17 @@ func (echoOpt *EchoOptions) setOption(opt string) error {
 		echoOpt.NewLine = true
 	case "e":
 		echoOpt.EscapeCharacter = true
+	case "help":
+		echoOpt.ShowHelp = true
+
 	default:
 		return fmt.Errorf("%v is not a valid flag", opt)
 	}
 	return nil
+}
+func (echoOpt *EchoOptions) resetFlag() {
+	echoOpt.NewLine = true
+	echoOpt.ShowHelp = false
+	echoOpt.EscapeCharacter = false
+	// echoOpt
 }
